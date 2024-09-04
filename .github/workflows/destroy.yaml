@@ -1,0 +1,42 @@
+---
+on:
+- workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Authenticate to Google
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+      - name: terraform init
+        uses: robertdebock/terraform-action@1.1.4
+        with:
+          action: init
+          directory: ./section1/terraform
+      - name: terraform validate
+        uses: robertdebock/terraform-action@1.1.4
+        with:
+          action: validate
+          directory: ./section1/terraform
+      - name: terraform plan
+        uses: robertdebock/terraform-action@1.1.4
+        with:
+          action: plan
+          directory: ./section1/terraform
+      - name: terraform apply
+        uses: robertdebock/terraform-action@1.1.4
+        with:
+          action: apply
+          directory: ./section1/terraform
+      - name: terraform destroy
+        uses: robertdebock/terraform-action@1.1.4
+        with:
+          action: destroy
+          directory: ./section1/terraform
+        env:
+          TF_CLI_ARGS: "-input=false -auto-approve"

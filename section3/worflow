@@ -1,0 +1,58 @@
+name: Build and Deploy to GKE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_KEY_FILE }}
+
+    - name: Configure GCR Docker credentials
+      run: echo "${{ secrets.GCP_KEY_FILE }}" | docker login -u _json_key --password-stdin https://gcr.io
+
+    - name: Build and tag Docker image
+      run: |
+        docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/your-app-name:$GITHUB_SHA .
+        docker tag gcr.io/${{ secrets.GCP_PROJECT }}/your-app-name:$GITHUB_SHA gcr.io/${{ secrets.GCP_PROJECT }}/your-app-name:latest
+
+    - name: Push Docker image to GCR
+      run: |
+        docker push gcr.io/${{ secrets.GCP_PROJECT }}/your-app-name:$GITHUB_SHA
+        docker push gcr.io/${{ secrets.GCP_PROJECT }}/your-app-name:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_KEY_FILE }}
+
+    - name: Configure kubectl for GKE
+      run: |
+        gcloud config set project ${{ secrets.GCP_PROJECT }}
+        gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --zone ${{ secrets.GKE_CLUSTER_ZONE }}
+
+    - name: Deploy to GKE
+      run: |
+        kubectl set image deployment/your-deployment-name your-container-name=gcr.io/${{ secrets.GCP_PROJECT }}/your-app-name:$GITHUB_SHA
+        kubectl apply -f deployment.yaml
