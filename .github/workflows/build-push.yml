@@ -1,11 +1,11 @@
-name: build and deploy
+name: ci
 
 on:
   push:
    
 
 jobs:
-  build:
+  docker:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -14,16 +14,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Authenticate with Google Cloud using Email and Password
-        run: |
-          export EMAIL="${{ secrets.GCLOUD_EMAIL }}"
-          export PASSWORD="${{ secrets.GCLOUD_PASSWORD }}"
-          
-          # Use gcloud auth with email and password
-          gcloud auth login $EMAIL --password $PASSWORD --quiet
-        env:
-          GCLOUD_EMAIL: ${{ secrets.GCLOUD_EMAIL }}
-          GCLOUD_PASSWORD: ${{ secrets.GCLOUD_PASSWORD }}
+      - name: Log in to Google Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: gcr.io
+          username: _json_key
+          password: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Build & push Docker image
         uses: docker/build-push-action@v4
@@ -33,27 +29,19 @@ jobs:
           push: true
           tags: gcr.io/codematic-external-sandbox/spring:latest
 
-      - name: Authenticate with Google Cloud using Email and Password
-        run: |
-          export EMAIL="${{ secrets.GCLOUD_EMAIL }}"
-          export PASSWORD="${{ secrets.GCLOUD_PASSWORD }}"
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: 'Create Cloud Deploy delivery pipeline'
+        run: |-
+          gcloud deploy apply --file ./pipeline.yaml --region us-east1 
           
-          # Use gcloud auth with email and password
-          gcloud auth login $EMAIL --password $PASSWORD --quiet
-        env:
-          GCLOUD_EMAIL: ${{ secrets.GCLOUD_EMAIL }}
-          GCLOUD_PASSWORD: ${{ secrets.GCLOUD_PASSWORD }}
-
-  
-  deploy:
-      needs: build
-      runs-on: ubuntu-latest
-      steps:
       - name: Deploy using Google Cloud Deploy
         run: |
           gcloud deploy releases create release-$(date +%Y%m%d-%H%M%S) \
           --project=codematic-external-sandbox \
-          --delivery-pipeline=demo-btnmh5s \
+          --delivery-pipeline=gke-cicd-pipeline \
           --region=us-east1 \
           --images=your-app=gcr.io/codematic-external-sandbox/spring:v1 \
           --description="Automated deployment from GitHub Actions"
