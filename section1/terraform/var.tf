@@ -12,5 +12,5 @@ variable "region" {
 variable "project_id"{
     description = "The project id "
     type        = string
-    default = "super-sandbox-434412"
+    default = "codematic-external-sandbox"
 }
