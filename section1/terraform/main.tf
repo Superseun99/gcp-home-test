@@ -8,7 +8,7 @@ module "network" {
   network_name = "my-test"
   region = "us-east1"
   subnet_name = "sub-1"
-  project_id ="super-sandbox-434412"
+  project_id ="codematic-external-sandbox"
  
 
 }
