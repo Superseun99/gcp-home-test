@@ -15,9 +15,12 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: Make the script executable
+        run: chmod +x create-pipeline.sh
+
       - name: 'Create Cloud Deploy delivery pipeline'
         run: |-
-          gcloud deploy apply --file ./pipeline.yaml --region us-east1 
+          ./create-pipeline.sh
           
       - name: Deploy using Google Cloud Deploy
         run: |
@@ -55,12 +58,9 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
+      - name: Make the script executable
+        run: chmod +x create-cluster.sh
+
       - name: 'Create kubernetes cluster'
         run: |-
-          gcloud container clusters create mytestcluster \
-          --zone us-east1 \
-          --num-nodes 1 \
-          --machine-type e2-medium \
-          --enable-ip-alias \
-          --network default \
-          --subnetwork default
+          ./create-cluster.sh
