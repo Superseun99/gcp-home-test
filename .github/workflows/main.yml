@@ -3,6 +3,19 @@ on:
   - push
 
 jobs:
+  bucket:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Authenticate to Google
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+      - name: Create a storage bucket
+        run: |-
+          gcloud storage buckets create gs://ter-bucket --location us-east1
+
   build:
     runs-on: ubuntu-20.04
     steps:
