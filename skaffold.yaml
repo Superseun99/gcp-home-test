@@ -3,7 +3,7 @@ kind: Config
 deploy:
   kubectl: {}
 profiles:
-- name: target-1
+- name: test
 manifests:
   rawYaml:
     - ./section2/*
