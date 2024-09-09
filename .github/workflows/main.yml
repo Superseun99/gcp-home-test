@@ -12,9 +12,13 @@ jobs:
         uses: "google-github-actions/auth@v1"
         with:
           credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
-      - name: Create a storage bucket
-        run: |-
-          gcloud storage buckets create gs://ter-bucket --location us-east1
+      # - name: Create a storage bucket
+      #   run: |-
+      #     gcloud storage buckets create gs://ter-bucket --location us-east1
+      - name: Create bucket if it doesn't exist
+        run: |
+          chmod +x create_bucket.sh
+          ./create_bucket.sh
 
   build:
     runs-on: ubuntu-20.04
