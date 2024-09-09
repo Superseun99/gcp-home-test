@@ -14,5 +14,5 @@ kind: Target
 metadata:
   name: 'test'
 description: 'test target'
-run:
-  location: 'projects/codematic-external-sandbox/locations/us-east1/clusters/autopilot-cluster-1' #replace the last destination with the name of the cluster created and the region if it is changed from what is available here.
+gke:
+  cluster: 'projects/codematic-external-sandbox/locations/us-east1/clusters/mytestcluster' 
