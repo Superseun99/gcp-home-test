@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: docker
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
