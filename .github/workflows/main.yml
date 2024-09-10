@@ -14,6 +14,7 @@ jobs:
         uses: "google-github-actions/auth@v1"
         with:
           credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+          GOOGLE_APPLICATION_CREDENTIALS: "${{ secrets.GCP_CREDENTIALS }}"
       # - name: Create a storage bucket
       #   run: |-
       #     gcloud storage buckets create gs://ter-bucket --location us-east1
@@ -55,3 +56,4 @@ jobs:
           directory: ./section1/terraform
         env:
           TF_CLI_ARGS: "-input=false -auto-approve"
+          GOOGLE_APPLICATION_CREDENTIALS: "${{ secrets.GCP_CREDENTIALS }}"
