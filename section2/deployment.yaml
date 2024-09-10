@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-container
-        image: gcr.io/super-sandbox-434412/spring:latest
+        image: gcr.io/codematic-external-sandbox/spring:latest
         ports:
         - containerPort: 80
         
