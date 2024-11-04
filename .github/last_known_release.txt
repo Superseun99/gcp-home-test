@@ -1,0 +1,9 @@
+actions/checkout:v3
+actions/runner:v2.308.0
+actions/checkout:v3.2.0
+actions/upload-artifact:v3.1.2
+google-github-actions/auth:v1
+docker/setup-buildx-action@v2
+docker/login-action@v2
+docker/build-push-action@v4
+robertdebock/terraform-action@1.1.4
