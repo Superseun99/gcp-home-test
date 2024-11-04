@@ -1,0 +1,52 @@
+name: Watch for GitHub Runner Image Releases
+
+on:
+  schedule:
+    - cron: "0 12 * * *"  # Runs daily at 12:00 UTC. Adjust as needed.
+  workflow_dispatch:       # Allows manual runs.
+
+jobs:
+  check-new-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check for New Runner Release
+        id: check_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch the latest release for the GitHub Actions runner
+          latest_release=$(curl -s https://api.github.com/repos/actions/runner/releases/latest | jq -r '.tag_name')
+          
+          # Compare with the last known release stored in the repository
+          last_known_release_file=".github/last_known_release.txt"
+          last_known_release=""
+          if [ -f "$last_known_release_file" ]; then
+            last_known_release=$(cat $last_known_release_file)
+          fi
+
+          echo "Latest release: $latest_release"
+          echo "Last known release: $last_known_release"
+
+          if [ "$latest_release" != "$last_known_release" ]; then
+            echo "New release found: $latest_release"
+            echo "$latest_release" > $last_known_release_file
+            echo "::set-output name=new_release::true"
+          else
+            echo "::set-output name=new_release::false"
+          fi
+
+      # - name: Commit New Release Record
+      #   if: steps.check_release.outputs.new_release == 'true'
+      #   run: |
+      #     git config --global user.name "github-actions[bot]"
+      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #     git add .github/last_known_release.txt
+      #     git commit -m "Update last known release to $latest_release"
+      #     git push
+
+      - name: Notify via GitHub Issue
+        if: steps.check_release.outputs.new_release == 'true'
+        run: |
+          gh issue create --title "New GitHub Runner Release Detected: $latest_release" \
+            --body "A new GitHub Actions runner image release is available: **$latest_release**."
