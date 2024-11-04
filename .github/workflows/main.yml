@@ -1,8 +1,8 @@
 ---
+# on:
+#    - push
 on:
-   - push
-#on:
-#- workflow_dispatch
+- workflow_dispatch
 
 jobs:
   bucket:
