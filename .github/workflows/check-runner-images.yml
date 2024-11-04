@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Make release file executable
+        run: chmod +x .github/last_known_release.txt
+        
       - name: Check for New Runner Release
         id: check_release
         env:
