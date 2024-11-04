@@ -15,12 +15,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-         last_known_release_file=".github/last_known_release.txt"
-         while IFS= read -r line; do
-         repo=$(echo "$line" | cut -d':' -f1)
-         last_version=$(echo "$line" | cut -d':' -f2)
-          
-          # Fetch the latest release for the GitHub Actions runner
+         # Fetch the latest release for the GitHub Actions runner
           latest_release=$(curl -s https://api.github.com/repos/actions/runner/releases/latest | jq -r '.tag_name')
           
           # Compare with the last known release stored in the repository
