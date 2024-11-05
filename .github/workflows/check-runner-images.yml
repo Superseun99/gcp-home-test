@@ -61,9 +61,13 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.27.0
         with:
-          payload-file-path: ".github/last_known_release.txt"
+          channel-id: 'C07UUP5P143'
+          # For posting a simple plain text message
+          slack-message: "GitHub build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+          #payload-file-path: ".github/last_known_release.txt"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       # - name: Notify via GitHub Issue
       #   if: steps.check_release.outputs.new_release == 'true'
       #   env:
