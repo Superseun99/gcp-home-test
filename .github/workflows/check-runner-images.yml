@@ -37,10 +37,8 @@ jobs:
           if [ "$latest_release" != "$last_known_release" ]; then
             echo "New release found: $latest_release"
             echo "$latest_release" > $last_known_release_file
-            #echo "::set-output name=new_release::true"
             echo "{new_release}={true}" >> $GITHUB_STATE
           else
-            #echo "::set-output name=new_release::false"
             echo "{new_release}={false}" >> $GITHUB_OUTPUT
           fi
 
@@ -57,7 +55,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                    "text": "GitHub Action build result: "echo "{new_release}={false}" >> $GITHUB_OUTPUT"
                   }
                 }
               ]
