@@ -44,20 +44,26 @@ jobs:
             echo "{new_release}={false}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Send Slack Notification
-        # id: slack
-        # uses: slackapi/slack-github-action@v1.27.0
-        if: steps.check_releases.output.new_releases
+      # - name: Send Slack Notification
+      #   # id: slack
+      #   # uses: slackapi/slack-github-action@v1.27.0
+      #   if: steps.check_releases.output.new_releases
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     payload="{
+      #       \"text\": \"*New GitHub Runner Image Releases Detected:*\n${{ steps.check_releases.output.new_releases }}\"
+      #     }"
+
+      #     curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
+      - name: Send custom JSON data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.27.0
+        with:
+          payload-file-path: ".github/last_known_release.txt"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          payload="{
-            \"text\": \"*New GitHub Runner Image Releases Detected:*\n${{ steps.check_releases.output.new_releases }}\"
-          }"
-
-          curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
-
       # - name: Notify via GitHub Issue
       #   if: steps.check_release.outputs.new_release == 'true'
       #   env:
