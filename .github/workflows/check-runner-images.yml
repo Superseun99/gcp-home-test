@@ -61,7 +61,7 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.27.0
         with:
-          payload-delimiter: "_"
+          payload-delimiter: "hello world"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           channel-id: 'C07UUP5P143'
