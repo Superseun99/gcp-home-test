@@ -47,13 +47,13 @@ jobs:
       - name: Send Slack Notification
         # id: slack
         # uses: slackapi/slack-github-action@v1.27.0
-        if: steps.check_releases.$GITHUB_OUTPUT.new_releases
+        if: steps.check_releases.output.new_releases
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           payload="{
-            \"text\": \"*New GitHub Runner Image Releases Detected:*\n${{ steps.check_releases.$GITHUB_OUTPUT.new_releases }}\"
+            \"text\": \"*New GitHub Runner Image Releases Detected:*\n${{ steps.check_releases.output.new_releases }}\"
           }"
 
           curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
