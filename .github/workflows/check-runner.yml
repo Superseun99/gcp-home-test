@@ -6,7 +6,7 @@ name: Runner Updates Check (Scheduled Job)
 on:
   schedule:
     # run daily
-    - cron: "0 9 * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
           echo container_hooks_latest_version=$LATEST_VERSION >> $GITHUB_OUTPUT
 
 
-  check_pr:
+  send_new_release:
     runs-on: ubuntu-latest
     needs: check_versions
     if: needs.check_versions.outputs.runner_current_version != needs.check_versions.outputs.runner_latest_version || needs.check_versions.outputs.container_hooks_current_version != needs.check_versions.outputs.container_hooks_latest_version
@@ -63,7 +63,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "New Release Found: ${{ job.status }}\n${{ steps.runner_versions.outputs.runner_latest_version }}"
+                    "text": "New Release Found: https://github.com/actions/runner/releases"
                   }
                 }
               ]
