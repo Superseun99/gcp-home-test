@@ -63,7 +63,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "GitHub Action build result: ${{ job.status }}"
+                    "text": "New Release Found: ${{ job.status }}\n${{ steps.runner_versions.outputs.runner_latest_version }}"
                   }
                 }
               ]
