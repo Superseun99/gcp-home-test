@@ -1,8 +1,8 @@
 name: Watch for GitHub Runner Image Releases
 
 on:
-  schedule:
-    - cron: "0 12 * * *"  # Runs daily at 12:00 UTC. Adjust as needed.
+  # schedule:
+  #   - cron: "0 12 * * *"  # Runs daily at 12:00 UTC. Adjust as needed.
   workflow_dispatch:       # Allows manual runs.
 
 jobs:
